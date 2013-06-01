@@ -15,7 +15,7 @@ sub write_comment
     open(my $fh, ">> $file") or die "Argh: $file<br />$!";
     $data->{'mail'} = '' if ! $self->conf->{'mail'};
     $data->{'site'} = '' if ! $self->conf->{'site'};
-    print {$fh} $data->{'author'}.';'.$data->{'text'}.';'.$data->{'page'}.';'.$data->{'mail'}.';'.$data->{'site'}.';0000'."\n";
+    print {$fh} $data->{'author'}.';'.$data->{'text'}.';'.$data->{'page'}.';'.$data->{'mail'}.';'.$data->{'site'}.';'. time."\n";
     close($fh);
 }
 
@@ -39,6 +39,7 @@ sub get_comments
         $c->{'timestamp'} = $data[5];
         push @out, $c if($c->{'page'} eq $reference);
     }
+    @out = sort {$b->{'timestamp'} <=> $a->{'timestamp'}} @out;
     return @out;
 }
 

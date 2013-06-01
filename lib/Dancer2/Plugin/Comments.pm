@@ -3,7 +3,6 @@ use Dancer ':syntax';
 use Dancer2::Plugin;
 use Data::Dumper;
 use Module::Load;
-use Dancer2::Plugin::Comments::Handler::DBIC;
 
 register 'commentbox' => sub {
     my $conf = generate_config();
@@ -34,11 +33,12 @@ register 'comments' => sub {
     foreach(@comments)
     {
         my $c = $_;
-        debug $c->{'author'} if $c->{'author'};
-        debug $c->{'text'} if $c->{'text'};
-        $fe_code .= '<li><span class="author">'.$c->{'author'}.'</span>'; 
-        $fe_code .= '<span class="comment">' . $c->{'text'}.'</span>';
-        $fe_code .= '<span class="timestamp">' . $c->{'timestamp'} .'</span></li>';
+        if($c)
+        {
+            $fe_code .= '<li><span class="author">'.$c->{'author'}.'</span>'; 
+            $fe_code .= '<span class="comment">' . $c->{'text'}.'</span>';
+            $fe_code .= '<span class="timestamp">' . $c->{'timestamp'} .'</span></li>';
+        }
     }
     $fe_code .= '</div></ul>';
     return $fe_code; 

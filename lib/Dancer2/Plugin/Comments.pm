@@ -75,6 +75,8 @@ on_plugin_import {
 sub generate_config
 {
     my $conf = plugin_setting();
+    $conf->{'handler'} = $conf->{'handler'} ? $conf->{'handler'} : "DBIC";
+    $conf->{'db_class'} = $conf->{'db_class'} ? $conf->{'db_class'} : "Comment";
     $conf->{'post_route'} = $conf->{'post_route'} ? $conf->{'post_route'} : "/comment";
     $conf->{'css_box_id'} = $conf->{'css_box_id'} ? $conf->{'css_box_id'} : "commentsbox";
     $conf->{'css_list_id'} = $conf->{'css_list_id'} ? $conf->{'css_list_id'} : "comments";

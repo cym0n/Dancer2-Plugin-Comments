@@ -4,10 +4,14 @@ use Dancer2::Plugin;
 use Data::Dumper;
 use Module::Load;
 
+
 register 'commentbox' => sub {
     my $conf = generate_config();
-    my $box = '<form id="'. $conf->{'css_box_id'} .'" action="'.$conf->{'post_route'}.'" method="post">' . 
-        '<p><input type="text" name="author" /><label for="author">' . $conf->{'author_label'} . '</label></p>';
+    my $box = '<form id="'. $conf->{'css_box_id'} .'" action="'.$conf->{'post_route'}.'" method="post">';
+    if($conf->{'author'} == 1)
+    { 
+        $box .= '<p><input type="text" name="author" /><label for="author">' . $conf->{'author_label'} . '</label></p>';
+    }
     if($conf->{'mail'})
     {    
         $box .= '<p><input type="text" name="mail" /><label for="mail">' . $conf->{'mail_label'} . '</label></p>';
@@ -72,17 +76,28 @@ on_plugin_import {
 
 };
 
+#Plugin settings wrapped here for default values management
 sub generate_config
 {
     my $conf = plugin_setting();
-    $conf->{'handler'} = $conf->{'handler'} ? $conf->{'handler'} : "DBIC";
-    $conf->{'db_class'} = $conf->{'db_class'} ? $conf->{'db_class'} : "Comment";
-    $conf->{'post_route'} = $conf->{'post_route'} ? $conf->{'post_route'} : "/comment";
-    $conf->{'css_box_id'} = $conf->{'css_box_id'} ? $conf->{'css_box_id'} : "commentsbox";
-    $conf->{'css_list_id'} = $conf->{'css_list_id'} ? $conf->{'css_list_id'} : "comments";
-    $conf->{'author_label'} = $conf->{'author_label'} ? $conf->{'author_label'} : "Author";
-    $conf->{'mail_label'} = $conf->{'mail_label'} ? $conf->{'mail_label'} : "Mail";
-    $conf->{'site_label'} = $conf->{'site_label'} ? $conf->{'site_label'} : "Site";
+    $conf->{'handler'} ||= "DBIC";
+    $conf->{'db_class'} ||= "Comment";
+    $conf->{'post_route'} ||= "/comment";
+    $conf->{'css_box_id'} ||= "commentsbox";
+    $conf->{'css_list_id'} ||= "comments";
+    $conf->{'author_label'} ||= "Author";
+    $conf->{'mail_label'} ||= "Mail";
+    $conf->{'site_label'} ||= "Site";
+    #If author is off no mail or site should be requested
+    if($conf->{'author'} == 0)
+    {
+        $conf->{'mail'} = 0;
+        $conf->{'site'} = 0;
+    }
+    else
+    {
+        $conf->{'author'} = 1;
+    }
     return $conf;
 }
 

@@ -37,6 +37,10 @@ Every needed argument has a default values (the value in the example below).
         #The route that will be used to post
         post_route: "/comment"
 
+        #Author flag. If 0 no author data will be asked. Mail and site will be off too. 
+        #Configuration useful when user is logged on the site but BEWARE: none of the given handlers manages user login. You have to write one that do.
+        author: 1
+
         #Flags to save also mail and site of the user
         mail: 0
         site: 0 
